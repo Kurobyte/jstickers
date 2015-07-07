@@ -1,0 +1,55 @@
+<html>
+<head>
+    <title> jStickers </title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/font-awesome.css">
+    <link rel="stylesheet" href="css/jquery-ui.css">
+    <link rel="stylesheet" href="css/jquery-ui.theme.css">
+    <link rel="stylesheet" href="css/jquery-confirm.min.css">
+    <link href='http://fonts.googleapis.com/css?family=Monda' rel='stylesheet' type='text/css'>
+    
+    <script type="text/javascript" src="js/jquery-2.1.3.js"></script>
+    <script type="text/javascript" src="js/jquery-ui.js"></script>
+    <script type="text/javascript" src="js/jquery-confirm.min.js"></script>
+    
+    <script type="text/javascript" src="js/settingsDB.js"></script>
+    <script type="text/javascript" src="js/stickers.js"></script>
+    <script type="text/javascript" src="js/funcions.js"></script>
+</head>
+<body>
+<div id="content">
+    <div id="frameBar">
+        <div id="titleWindow">
+            <label>jStickers (v<script> document.write(gui.App.manifest.version);</script>b)</label>
+        </div>
+        <div id="windowControls">
+            <!-- Uncoment for debug -->
+            <!--<i onclick="openDevTools();" class="fa fa-code"></i>-->
+            <i onclick="openFolder();" title="Open download folder" class="fa fa-folder-open"></i>
+            <i onclick="Minimizar();" class="fa fa-minus"></i>
+            <!--<i onclick="Maximize();" class="fa fa-desktop" disabled></i>-->
+            <i onclick="window.close();" class="fa fa-close"></i>
+        </div>
+    </div>
+    <div id="appBody">
+        <div id="imgPlaceholder">
+            <img id="placeholder" src="img/sticker_placeholder.png" style="width: 100%;">
+        </div>
+        <div id="controls">
+            <div id="sticker_name" style="font-size:20px; font-weight: bold;">Name:</div>
+            <div id="sticker_no" style="font-size:14px; font-weight: bold;">Nº:</div>
+            <input type="text" id="stickerId" onblur="loadStickerData(this.value);" placeholder="Sticker ID">
+            <button onclick="download();">Download</button><br/>
+            <div id="progressbar" style="width: 98%; margin-top: 5px;"><div id="prgLabel" class="progress-label">0%</div></div>
+            
+            <script>
+                
+            </script>
+        </div>
+        <div id="about"><i class="fa fa-info-circle"onclick="showAbout();" title="About information."></i><i onclick="selectFolder();" title="Select Download Folder" class="fa fa-folder"></i><i onclick="updateProdDB();" title="Update DB" class="fa fa-database" style="margin-right: 0px;"></i></div>
+        <script></script>
+    </div>
+</div> 
+</body>
+</html>

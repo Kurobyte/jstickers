@@ -1,0 +1,16 @@
+{
+  "name": "jStickers",
+  "version": "1.0",
+  "main": "index.html",
+  "window": {
+    "frame": false,
+    "toolbar": false,
+      "icon": "./img/logo.png",
+    "width": 580,
+    "height": 230,
+    "min_width": 580,
+    "min_height": 230,
+    "max_width": 580,
+    "max_height": 230
+  }
+}

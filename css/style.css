@@ -1,0 +1,128 @@
+html {
+  margin: 0px;
+  padding: 0px;
+  overflow: hidden;
+}
+
+body {
+    margin: 0px;
+    padding: 0px;
+    font-family: 'Monda', sans-serif;
+}
+
+button {
+    border: 1px solid grey;
+    border-left: 0px;
+    margin-top: 10px;
+    margin-left: -4px;
+    padding: 5px;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+}
+
+input[type = "text"] {
+    padding: 4px;
+}
+
+#frameBar {
+    -webkit-app-region: drag; /*Make frameBar draggable*/
+    background-color: #454545;
+    color: ghostwhite;
+    padding: 2px 5px 2px 5px;
+    overflow: hidden;
+    height: 20px;
+}
+
+#titleWindow {
+    float: left;
+    font-size: 0.9em;
+    margin-top: -1;
+}
+
+#windowControls {
+    -webkit-app-region: no-drag; /*Blocks the dragg over the controls*/
+    float: right;
+    margin-top: -3px;
+}
+
+#windowControls i {
+    /*height: 20px;
+    margin-top: -4px;
+    margin-bottom: -10px;*/
+    padding: 4px;
+}
+
+#windowControls i:hover {
+    background-color: #555555;
+    color: #EAEAEA;
+}
+
+#appBody {
+    background-color: rgb(228, 228, 228);
+    background-image: url('../img/back-pat.png');
+    height: 100%;
+    padding: 5px;
+}
+
+#imgPlaceholder { 
+    float: left; 
+    width: 38%;
+    height: 100%;
+    margin-top: -5px;
+    margin-left: -5;
+    background-color: darkgray;
+    background-image: url('../img/back-pat.png');
+}
+
+#controls { overflow: hidden; float: left; width: 61%; margin-left: 1%; }
+
+#sticker_name {
+    height: 30px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+#about {
+    position: absolute;
+    right: 0px;
+    bottom: 0px;
+    background-color: dimgrey;
+    color: white;
+    padding: 2px 4px 1px 4px;
+    border-top-left-radius: 5px;
+    font-size: 1em;
+}
+
+#about i {
+    margin-right: 5px;
+}
+
+#popClose {
+    position: absolute;
+    right: 0px;
+    top: 0px;
+    font-size: 1.2em;
+}
+
+#progressbar .ui-widget-header { background: #AACED8; }
+
+.ui-progressbar {
+    position: relative;
+}
+
+.progress-label {
+    position: absolute;
+    left: 49%;
+    top: 8px;
+    font-weight: bold;
+    text-shadow: 1px 1px 0 #fff;
+}
+
+/* COLORS FOR FA */
+.green { color: greenyellow; }
+
+.red { color: #e21b1b; }
+
+
+

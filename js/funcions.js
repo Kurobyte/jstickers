@@ -1,0 +1,162 @@
+var gui = require("nw.gui");
+var http = require('http');
+var fs = require('fs');
+var path = require("path");
+
+var BASE_URL = 'http://dl.stickershop.line.naver.jp';
+var APP_DIR = path.parse(process.execPath).dir;
+
+var sDB = new settingsDB();
+var prgCfg = {};
+
+var sData = undefined;
+var jData = undefined;
+var prgBar = undefined;
+
+var stickDB = undefined;
+var sTitle = "";
+var sVer = 1;
+var dirName = "";
+var nSticker = 0;
+
+
+$(document).ready( function() {
+    prgBar = $( "#progressbar" ).progressbar({
+        value: 0,
+        complete: function() { 
+            $.alert({
+                icon: 'fa fa-check green',
+                theme: 'supervan',
+                animation: 'opacity',
+                title: 'Success!',
+                content: 'Download completed.',
+                confirmButton: 'Close',
+                autoClose: 'confirm|3000'
+            });
+        }
+    });
+    loadProdVersions();
+});
+
+function openDevTools() {
+    var win = gui.Window.get();
+    if (win.isDevToolsOpen()) {
+      win.closeDevTools();
+    } else {
+      win.showDevTools();
+    }
+}
+
+function Maximize() {
+    gui.Window.get().maximize();
+}
+
+function Minimize() {
+    gui.Window.get().minimize();
+}
+
+function updateProdDB() {
+    $.confirm({
+        theme: 'supervan',
+        animation: 'opacity',
+        title: 'Update ProductVersions?',
+        content: 'Are you sure that you want to update? (It will take a while)',
+        confirmButton: 'Update',
+        cancelButton: 'Cancel',
+        confirm: function(){
+            downloadProdVersion(prgCfg.prodVer);
+        }
+    });
+}
+
+function readF() { //TODELETE
+    reader = fs.createReadStream('productVersions.meta', { encoding: 'utf8', mode: 666 });
+
+    readline = require('readline');
+    
+    var rd = readline.createInterface({
+        input: reader,
+        output: process.stdout,
+        terminal: false
+    });
+
+    rd.on('line', function(line) { //READ LINE BY LINE
+        stickDB = JSON.parse(line);
+    });
+}
+
+function loadProdVersions() {
+    //if (fs.existsSync())
+    fs.readFile(APP_DIR+'/productVersions.meta', 'utf8', function(err, data) {
+        if (err) {
+            //$.alert(); //ADD alert.
+        } else {
+            stickDB = JSON.parse(data);
+        }
+    });
+}
+
+function cllbConfig(key, value) {
+    prgCfg[key] = value;
+    if (key == sDB.settings.OUTDIR)
+        checkFolder();
+}
+
+/**
+ * Loads the configuration from the IndexedDB
+ */
+function loadConfig() {
+    sDB.getOption(sDB.settings.OUTDIR, sDB.tables.SETTINGS, cllbConfig);
+    sDB.getOption(sDB.settings.PRODVER, sDB.tables.SETTINGS, cllbConfig);
+}
+
+/**
+ * Saves all the config to the DB
+ */
+function saveConfig() {
+    keys = Object.keys(prgCfg);
+    for ( var i = 0; i < keys.length; i++) {
+        saveKeyConfig(keys[i], prgCfg[keys[i]]);
+    }
+}
+
+/**
+ * Saves a single config record to the DB
+ * @param {String} key   Key of the object
+ * @param {Object} value Value of the object
+ */
+function saveKeyConfig(key, value) {
+    sDB.saveOption(key, sDB.tables.SETTINGS, value);
+}
+
+function checkFolder() {
+    try {
+        stats = fs.lstatSync(prgCfg.outDir);
+        if (!stats.isDirectory())
+            fs.mkdirSync(prgCfg.outDir);
+    } catch (e) {
+        fs.mkdirSync(prgCfg.outDir);    
+    }
+}
+
+function openFolder() {
+    var open = require('node-open');
+    open('open', prgCfg.outDir);
+}
+
+function selectFolder() {
+    var op = $('<input type="file" nwdirectory nwworkingdir="'+prgCfg.outDir+'"/>');
+    op.on('change', function() {
+        prgCfg.outDir = this.value;
+        saveConfig();
+        checkFolder();
+    });
+    op.click();
+}
+
+function showAbout() {
+    var win = gui.Window.open('about.html', {toolbar:false, frame:false, "width": 250, "height": 260, "max_width": 250, "max_height": 260});
+    win.on('closed', function() {
+        win = null;
+    });
+}
