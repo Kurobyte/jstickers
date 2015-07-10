@@ -74,6 +74,18 @@ input[type = "text"] {
     background-image: url('../img/back-pat.png');
 }
 
+#stickAtrib {
+    display: inline-block;
+    position: fixed;
+    bottom: 3px;
+    left: 3px;
+    width: 30px;
+}
+
+#stickAtrib img {
+    width: 100%;
+}
+
 #controls { overflow: hidden; float: left; width: 61%; margin-left: 1%; }
 
 #sticker_name {
@@ -81,6 +93,10 @@ input[type = "text"] {
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
+}
+
+#options {
+    font-size: 0.8em;
 }
 
 #about {

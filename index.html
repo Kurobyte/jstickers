@@ -34,6 +34,7 @@
     </div>
     <div id="appBody">
         <div id="imgPlaceholder">
+            <div id="stickAtrib"></div>
             <img id="placeholder" src="img/sticker_placeholder.png" style="width: 100%;">
         </div>
         <div id="controls">
@@ -42,6 +43,7 @@
             <input type="text" id="stickerId" onblur="loadStickerData(this.value);" placeholder="Sticker ID">
             <button onclick="download();">Download</button><br/>
             <div id="progressbar" style="width: 98%; margin-top: 5px;"><div id="prgLabel" class="progress-label">0%</div></div>
+            <div id="options"><i id="dwnAnim" class="fa fa-square" onclick="downloadAnimated();"></i> Download animated?</div>
             
             <script>
                 

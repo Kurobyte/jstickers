@@ -48,6 +48,8 @@ function loadStickerData(sticker_id) {
             autoClose: 'confirm|4000'
         });
     } else {
+        dwnAnimated = null;
+        $('#stickAtrib').html('');
         sVer = searchVer(sticker_id);
         $('#placeholder').attr('src', BASE_URL+'/products/0/0/'+ sVer +'/'+ sticker_id +'/android/main.png'); //LINEStorePC
 
@@ -59,6 +61,15 @@ function loadStickerData(sticker_id) {
                 sTitle = jData.title[lang[0]];
                 $('#sticker_name').html('Name: '+jData.title[lang[0]]);
                 $('#sticker_no').html('Nº: '+jData.stickers.length);
+                
+                if ('hasAnimation' in jData) {
+                    if (jData.hasAnimation) {
+                        dwnAnimated = false;
+                        $('#stickAtrib').html('<img src="img/animated.png" title="Animated Sticker">');
+                    }
+                }
+                
+                reSetOptions();
             },
             error: function() {
                 sData = undefined;
@@ -90,14 +101,27 @@ function download() {
     prgBar.progressbar("value", 0); //Reset progressbar
     dirName = jData.packageId+' - '+replace_all(sTitle);
     
-    try {
-        stats = fs.lstatSync(prgCfg.outDir+'/'+dirName);
-    } catch (e) {
-        fs.mkdirSync(prgCfg.outDir+'/'+dirName, 0777);
-    }
-    
-    for (var s = 0; s < jData.stickers.length; s++) {
-        downloadSticker(jData.packageId, jData.stickers[s].id);
+    if (dwnAnimated) { //Checks if is an animated sticker
+        try {
+            stats = fs.lstatSync(prgCfg.outDir+'/'+dirName);
+        } catch (e) {
+            fs.mkdirSync(prgCfg.outDir+'/'+dirName, 0777);
+            fs.mkdirSync(prgCfg.outDir+'/'+dirName+'/animated', 0777);
+        }
+
+        for (var s = 0; s < jData.stickers.length; s++) {
+            downloadAnimatedSticker(jData.packageId, jData.stickers[s].id);
+        }
+    } else {
+        try {
+            stats = fs.lstatSync(prgCfg.outDir+'/'+dirName);
+        } catch (e) {
+            fs.mkdirSync(prgCfg.outDir+'/'+dirName, 0777);
+        }
+
+        for (var s = 0; s < jData.stickers.length; s++) {
+            downloadSticker(jData.packageId, jData.stickers[s].id);
+        }
     }
 }
 
@@ -115,6 +139,36 @@ function downloadSticker(sticker_id, png_id) {
     });
     var request = http.get(BASE_URL+'/products/0/0/'+ sVer +'/'+ sticker_id +'/android/stickers/'+ png_id +'.png', function(response) {
         response.pipe(file);
+    });
+}
+
+
+/**
+ * Downloads the sticker and his animation from the server.
+ * @param {Number} sticker_id ID of the sticker.
+ * @param {Number} png_id     ID of the image.
+ */
+function downloadAnimatedSticker(sticker_id, png_id) {
+    var file = fs.createWriteStream(prgCfg.outDir+'/'+dirName+'/'+png_id +'.png');
+    var animated = fs.createWriteStream(prgCfg.outDir+'/'+dirName+'/animated/'+png_id +'.png');
+    animated.on('finish', function() {
+        exec('"'+APP_DIR+'/apng2gif" "'+prgCfg.outDir+'/'+dirName+'/animated/'+png_id +'.png" "'+prgCfg.outDir+'/'+dirName+'/animated/'+png_id +'.gif"', function(error, stdout, stderr) {
+            //console.log('stdout: ' + stdout);
+            //console.log('stderr: ' + stderr);
+            /*if (error !== null) {
+                console.log('exec error: ' + error);
+            }*/
+        });
+        prgBar.progressbar("value", ((nSticker + 1)/jData.stickers.length * 100));
+        $('#prgLabel').html( parseFloat((nSticker + 1)/jData.stickers.length * 100).toFixed(2) +"%");
+        nSticker++;
+    });
+    var request = http.get(BASE_URL+'/products/0/0/'+ sVer +'/'+ sticker_id +'/android/stickers/'+ png_id +'.png', function(response) {
+        response.pipe(file);
+    });
+    
+    var aniRequest = http.get(BASE_URL+'/products/0/0/'+ sVer +'/'+ sticker_id +'/android/animation/'+ png_id +'.png', function(response) {
+        response.pipe(animated);
     });
 }
 

@@ -2,6 +2,7 @@ var gui = require("nw.gui");
 var http = require('http');
 var fs = require('fs');
 var path = require("path");
+var exec = require('child_process').exec;
 
 var BASE_URL = 'http://dl.stickershop.line.naver.jp';
 var APP_DIR = path.parse(process.execPath).dir;
@@ -18,6 +19,7 @@ var sTitle = "";
 var sVer = 1;
 var dirName = "";
 var nSticker = 0;
+var dwnAnimated = null;
 
 
 $(document).ready( function() {
@@ -152,6 +154,37 @@ function selectFolder() {
         checkFolder();
     });
     op.click();
+}
+
+function downloadAnimated() {
+    if (dwnAnimated != null) {
+        var anim = $('#dwnAnim');
+        anim.removeClass('fa-square');
+        if (dwnAnimated) {
+            dwnAnimated = !dwnAnimated;
+            anim.removeClass('fa-check-square-o');
+            anim.addClass('fa-square-o');
+        } else {
+            dwnAnimated = !dwnAnimated;
+            anim.removeClass('fa-square-o');
+            anim.addClass('fa-check-square-o');
+        }
+    }
+}
+
+function reSetOptions() {
+    var anim = $('#dwnAnim');
+    if (dwnAnimated != null) {
+        anim.removeClass('fa-square');
+        if (dwnAnimated) {
+            anim.addClass('fa-check-square-o');
+        } else {
+            anim.addClass('fa-square-o');
+        }
+    } else {
+        var anim = $('#dwnAnim');
+        anim.attr('class', 'fa fa-square');
+    }
 }
 
 function showAbout() {
