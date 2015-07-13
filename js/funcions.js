@@ -20,6 +20,7 @@ var sVer = 1;
 var dirName = "";
 var nSticker = 0;
 var dwnAnimated = null;
+var dwnAudio = null;
 
 
 $(document).ready( function() {
@@ -172,8 +173,26 @@ function downloadAnimated() {
     }
 }
 
+function downloadAudio() {
+    if (dwnAudio != null) {
+        var audio = $('#dwnAudio');
+        audio.removeClass('fa-square');
+        if (dwnAudio) {
+            dwnAudio = !dwnAudio;
+            audio.removeClass('fa-check-square-o');
+            audio.addClass('fa-square-o');
+        } else {
+            dwnAudio = !dwnAudio;
+            audio.removeClass('fa-square-o');
+            audio.addClass('fa-check-square-o');
+        }
+    }
+}
+
 function reSetOptions() {
     var anim = $('#dwnAnim');
+    var audio = $('#dwnAudio');
+    
     if (dwnAnimated != null) {
         anim.removeClass('fa-square');
         if (dwnAnimated) {
@@ -182,8 +201,18 @@ function reSetOptions() {
             anim.addClass('fa-square-o');
         }
     } else {
-        var anim = $('#dwnAnim');
         anim.attr('class', 'fa fa-square');
+    }
+    
+    if (dwnAudio != null) {
+        audio.removeClass('fa-square');
+        if (dwnAudio) {
+            audio.addClass('fa-check-square-o');
+        } else {
+            audio.addClass('fa-square-o');
+        }
+    } else {
+        audio.attr('class', 'fa fa-square');
     }
 }
 

@@ -69,6 +69,13 @@ function loadStickerData(sticker_id) {
                     }
                 }
                 
+                if ('hasSound' in jData) {
+                    if (jData.hasSound) {
+                        dwnAudio = false;
+                        $('#stickAtrib').html('<img src="img/audio.png" title="Animated Sticker">');
+                    }
+                }
+                
                 reSetOptions();
             },
             error: function() {
@@ -98,29 +105,46 @@ function loadStickerData(sticker_id) {
  */
 function download() {
     nSticker = 0; //Reset nSticker value to 0
+    nOp = 1;
     prgBar.progressbar("value", 0); //Reset progressbar
     dirName = jData.packageId+' - '+replace_all(sTitle);
     
+    if (dwnAnimated) //Checks if is an animated sticker
+        nOp += 1;
+    if (dwnAudio) //Checks if is an audio sticker
+        nOp += 1;
+    
+    try {
+        stats = fs.lstatSync(prgCfg.outDir+'/'+dirName);
+    } catch (e) {
+        fs.mkdirSync(prgCfg.outDir+'/'+dirName, 0777);
+    }
+
+    for (var s = 0; s < jData.stickers.length; s++) {
+        downloadSticker(jData.packageId, jData.stickers[s].id, nOp);
+    }
+    
     if (dwnAnimated) { //Checks if is an animated sticker
         try {
-            stats = fs.lstatSync(prgCfg.outDir+'/'+dirName);
+            stats = fs.lstatSync(prgCfg.outDir+'/'+dirName+'/animated');
         } catch (e) {
-            fs.mkdirSync(prgCfg.outDir+'/'+dirName, 0777);
             fs.mkdirSync(prgCfg.outDir+'/'+dirName+'/animated', 0777);
         }
 
         for (var s = 0; s < jData.stickers.length; s++) {
-            downloadAnimatedSticker(jData.packageId, jData.stickers[s].id);
+            downloadAnimatedSticker(jData.packageId, jData.stickers[s].id, nOp);
         }
-    } else {
+    }
+    
+    if (dwnAudio) { //Checks if is an animated sticker
         try {
-            stats = fs.lstatSync(prgCfg.outDir+'/'+dirName);
+            stats = fs.lstatSync(prgCfg.outDir+'/'+dirName+'/sound');
         } catch (e) {
-            fs.mkdirSync(prgCfg.outDir+'/'+dirName, 0777);
+            fs.mkdirSync(prgCfg.outDir+'/'+dirName+'/sound', 0777);
         }
 
         for (var s = 0; s < jData.stickers.length; s++) {
-            downloadSticker(jData.packageId, jData.stickers[s].id);
+            downloadAudioSticker(jData.packageId, jData.stickers[s].id, nOp);
         }
     }
 }
@@ -129,12 +153,13 @@ function download() {
  * Downloads the sticker from the server.
  * @param {Number} sticker_id ID of the sticker.
  * @param {Number} png_id     ID of the image.
+ * @param {Number} nOp        Variable used to determine if needs to download extra things like animations/sound.
  */
-function downloadSticker(sticker_id, png_id) {
+function downloadSticker(sticker_id, png_id, nOp) {
     var file = fs.createWriteStream(prgCfg.outDir+'/'+dirName+'/'+png_id +'.png');
     file.on('finish', function() {
-        prgBar.progressbar("value", ((nSticker + 1)/jData.stickers.length * 100));
-        $('#prgLabel').html( parseFloat((nSticker + 1)/jData.stickers.length * 100).toFixed(2) +"%");
+        prgBar.progressbar("value", ((nSticker + 1)/(jData.stickers.length * nOp) * 100));
+        $('#prgLabel').html( parseFloat((nSticker + 1)/(jData.stickers.length * nOp) * 100).toFixed(2) +"%");
         nSticker++;
     });
     var request = http.get(BASE_URL+'/products/0/0/'+ sVer +'/'+ sticker_id +'/android/stickers/'+ png_id +'.png', function(response) {
@@ -147,28 +172,39 @@ function downloadSticker(sticker_id, png_id) {
  * Downloads the sticker and his animation from the server.
  * @param {Number} sticker_id ID of the sticker.
  * @param {Number} png_id     ID of the image.
+ * @param {Number} nOp        Variable used to determine if needs to download extra things like animations/sound.
  */
-function downloadAnimatedSticker(sticker_id, png_id) {
-    var file = fs.createWriteStream(prgCfg.outDir+'/'+dirName+'/'+png_id +'.png');
+function downloadAnimatedSticker(sticker_id, png_id, nOp) {
     var animated = fs.createWriteStream(prgCfg.outDir+'/'+dirName+'/animated/'+png_id +'.png');
     animated.on('finish', function() {
         exec('"'+APP_DIR+'/apng2gif" "'+prgCfg.outDir+'/'+dirName+'/animated/'+png_id +'.png" "'+prgCfg.outDir+'/'+dirName+'/animated/'+png_id +'.gif"', function(error, stdout, stderr) {
-            //console.log('stdout: ' + stdout);
-            //console.log('stderr: ' + stderr);
-            /*if (error !== null) {
-                console.log('exec error: ' + error);
-            }*/
         });
-        prgBar.progressbar("value", ((nSticker + 1)/jData.stickers.length * 100));
-        $('#prgLabel').html( parseFloat((nSticker + 1)/jData.stickers.length * 100).toFixed(2) +"%");
+        prgBar.progressbar("value", ((nSticker + 1)/(jData.stickers.length * nOp) * 100));
+        $('#prgLabel').html( parseFloat((nSticker + 1)/(jData.stickers.length * nOp) * 100).toFixed(2) +"%");
         nSticker++;
-    });
-    var request = http.get(BASE_URL+'/products/0/0/'+ sVer +'/'+ sticker_id +'/android/stickers/'+ png_id +'.png', function(response) {
-        response.pipe(file);
     });
     
     var aniRequest = http.get(BASE_URL+'/products/0/0/'+ sVer +'/'+ sticker_id +'/android/animation/'+ png_id +'.png', function(response) {
         response.pipe(animated);
+    });
+}
+
+/**
+ * Downloads the audio tracks for the sticker.
+ * @param {Number} sticker_id ID of the sticker.
+ * @param {Number} png_id     ID of the image.
+ * @param {Number} nOp        Variable used to determine if needs to download extra things like animations/sound.
+ */
+function downloadAudioSticker(sticker_id, png_id, nOp) {
+    var audio = fs.createWriteStream(prgCfg.outDir+'/'+dirName+'/sound/'+png_id +'.m4a');
+    audio.on('finish', function() {
+        prgBar.progressbar("value", ((nSticker + 1)/(jData.stickers.length * nOp) * 100));
+        $('#prgLabel').html( parseFloat((nSticker + 1)/(jData.stickers.length * nOp) * 100).toFixed(2) +"%");
+        nSticker++;
+    });
+    
+    var aniRequest = http.get(BASE_URL+'/products/0/0/'+ sVer +'/'+ sticker_id +'/android/sound/'+ png_id +'.m4a', function(response) {
+        response.pipe(audio);
     });
 }
 
