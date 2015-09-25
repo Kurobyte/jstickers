@@ -50,8 +50,13 @@ function loadStickerData(sticker_id) {
     } else {
         dwnAnimated = null;
         $('#stickAtrib').html('');
+        nSticker = sticker_id;
         sVer = searchVer(sticker_id);
-        $('#placeholder').attr('src', BASE_URL+'/products/0/0/'+ sVer +'/'+ sticker_id +'/android/main.png'); //LINEStorePC
+        if ($('#imgPlaceholder > canvas').length == 0)
+            $('#placeholder').attr('src', BASE_URL+'/products/0/0/'+ sVer +'/'+ sticker_id +'/android/main.png'); //LINEStorePC
+        else {
+            $('#imgPlaceholder').html('<div id="stickAtrib"></div><img id="placeholder" class="undraggable" src="'+BASE_URL+'/products/0/0/'+ sVer +'/'+ sticker_id +'/android/main.png" style="width: 100%;"><audio id="stickSound"></audio>')
+        }
 
         $.ajax(BASE_URL+'/products/0/0/'+ sVer +'/'+ sticker_id +'/android/productInfo.meta', {
             success: function(data) {
@@ -61,11 +66,17 @@ function loadStickerData(sticker_id) {
                 sTitle = jData.title[lang[0]];
                 $('#sticker_name').html('Name: '+jData.title[lang[0]]);
                 $('#sticker_no').html('Nº: '+jData.stickers.length);
+                $('#stickAtrib').unbind();
+                $('#placeholder').unbind();
                 
                 if ('hasAnimation' in jData) {
                     if (jData.hasAnimation) {
                         dwnAnimated = false;
+                        $('#placeholder').attr('src', BASE_URL+'/products/0/0/'+ sVer +'/'+ sticker_id +'/iphone/main_animation@2x.png'); //APNG
+                        $('#placeholder').attr('onclick', 'playAPNG();'); //APNG
                         $('#stickAtrib').html('<img src="img/animated.png" title="Animated Sticker">');
+                        APNG.animateImage(document.getElementById('placeholder'));
+                        $('#stickAtrib').click(playAPNG);
                     }
                 }
                 
@@ -73,6 +84,11 @@ function loadStickerData(sticker_id) {
                     if (jData.hasSound) {
                         dwnAudio = false;
                         $('#stickAtrib').html('<img src="img/audio.png" title="Animated Sticker">');
+                        audio = document.getElementById('stickSound');
+                        audio.src = BASE_URL+'/products/0/0/'+ sVer +'/'+ sticker_id +'/android/main_sound.m4a';
+                        audio.play();
+                        $('#placeholder').click(playAudio);
+                        $('#stickAtrib').click(playAudio);
                     }
                 }
                 
@@ -213,6 +229,7 @@ function downloadAudioSticker(sticker_id, png_id, nOp) {
  * @param {Number} version Last local ProductVersion.
  */
 function downloadProdVersion(version) {
+    $('#statMsg').html('(Updating DB: '+version+')');
     var request = http.get(BASE_URL+'/products/productVersions_'+version+'.meta', function(response) {
         if (response.statusCode == 404) {
             try {
@@ -225,6 +242,7 @@ function downloadProdVersion(version) {
                 loadProdVersions();
             });
             var request = http.get(BASE_URL+'/products/productVersions_'+(version - 1)+'.meta', function(response) {
+                $('#statMsg').html('');
                 response.pipe(file);
             });
             prgCfg.prodVer = (version - 1);
@@ -233,6 +251,4 @@ function downloadProdVersion(version) {
             downloadProdVersion(version + 1);
         }
     });
-    
-    //console.log(version);
 }

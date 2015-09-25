@@ -19,6 +19,8 @@ var sTitle = "";
 var sVer = 1;
 var dirName = "";
 var nSticker = 0;
+var apngImg = null;
+var audio = null;
 var dwnAnimated = null;
 var dwnAudio = null;
 
@@ -72,27 +74,10 @@ function updateProdDB() {
     });
 }
 
-function readF() { //TODELETE
-    reader = fs.createReadStream('productVersions.meta', { encoding: 'utf8', mode: 666 });
-
-    readline = require('readline');
-    
-    var rd = readline.createInterface({
-        input: reader,
-        output: process.stdout,
-        terminal: false
-    });
-
-    rd.on('line', function(line) { //READ LINE BY LINE
-        stickDB = JSON.parse(line);
-    });
-}
-
 function loadProdVersions() {
-    //if (fs.existsSync())
     fs.readFile(APP_DIR+'/productVersions.meta', 'utf8', function(err, data) {
         if (err) {
-            //$.alert(); //ADD alert.
+            //$.alert();
         } else {
             stickDB = JSON.parse(data);
         }
@@ -216,8 +201,18 @@ function reSetOptions() {
     }
 }
 
+function playAPNG() {
+    $('#placeholder').after('<img id="placeholder" class="undraggable" src="'+ BASE_URL+'/products/0/0/'+ sVer +'/'+ nSticker +'/iphone/main_animation@2x.png" style="width: 100%;" onclick="playAPNG();">'); //APNG
+    $('canvas').remove();
+    APNG.animateImage(document.getElementById('placeholder'));
+}
+
+function playAudio() {
+    audio.play();
+}
+
 function showAbout() {
-    var win = gui.Window.open('about.html', {toolbar:false, frame:false, "width": 250, "height": 260, "max_width": 250, "max_height": 260});
+    var win = gui.Window.open('about.html', {"title": "jStickers - About", toolbar:false, frame:false, "icon": "./img/logo.png", "width": 350, "height": 320, "max_width": 350, "max_height": 320});
     win.on('closed', function() {
         win = null;
     });

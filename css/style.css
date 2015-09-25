@@ -39,6 +39,11 @@ input[type = "text"] {
     margin-top: -1;
 }
 
+#statMsg {
+    margin-left: 10px;
+    font-size: 0.7em;
+}
+
 #windowControls {
     -webkit-app-region: no-drag; /*Blocks the dragg over the controls*/
     float: right;
@@ -116,8 +121,8 @@ input[type = "text"] {
 
 #popClose {
     position: absolute;
-    right: 0px;
-    top: 0px;
+    right: 10px;
+    top: 8px;
     font-size: 1.2em;
 }
 

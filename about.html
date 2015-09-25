@@ -4,13 +4,23 @@
     <link rel="stylesheet" href="css/font-awesome.css">
     <link href='http://fonts.googleapis.com/css?family=Monda' rel='stylesheet' type='text/css'>
     <script type="text/javascript" src="js/jquery-2.1.3.js"></script>
+    <link rel="icon" type="image/png" href="img/logo.png" />
+    <script>
+        var gui = require('nw.gui');
+        function closeme() {
+            window.close(true);
+        }
+        window.onblur = closeme;
+        window.focus();
+    </script>
 </head>
-<body>
+<body style="padding: 3px; background: rgb(36, 36, 36);">
 <div id="popClose" class="red"><i class="fa fa-close" onclick="window.close(true);"></i></div>
-<div id="appBody">
+<div id="appBody" style="border: 3px solid black; height: 95%;">
     <div id="sticker_name" style="font-size:20px; font-weight: bold;">About:</div>
     <label><i class="fa fa-code-fork"></i> <b>jStickers by Kurobyte</b></label>
-    <p>This application allows you to download the stickers in <b>.PNG</b> format from the LINE Shop.</p>
+    <p>This application allows you to download the stickers in <b>.PNG</b>, Animated Stickers in <b>.PNG(APNG) and .GIF</b> and Sound Stickers in <b>.M4A (AAC)</b>, from the LINE Shop.</p>
+    <p>Developed with <b onclick="gui.Shell.openExternal('https://github.com/nwjs/nw.js)">NW.JS</b>, <b onclick="gui.Shell.openExternal('https://github.com/davidmz/apng-canvas')">apng-canvas</b>, <b onclick="gui.Shell.openExternal('http://apng2gif.sourceforge.net/')">apng2gif</b>.</p>
 </div>
 </body>
 </html>
