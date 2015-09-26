@@ -202,8 +202,12 @@ function reSetOptions() {
 }
 
 function playAPNG() {
+    
     $('#placeholder').after('<img id="placeholder" class="undraggable" src="'+ BASE_URL+'/products/0/0/'+ sVer +'/'+ nSticker +'/iphone/main_animation@2x.png" style="width: 100%;" onclick="playAPNG();">'); //APNG
     $('canvas').remove();
+    if (audio != null) {
+        $('#placeholder').attr('onclick', 'playAPNG(); playAudio();');
+    }
     APNG.animateImage(document.getElementById('placeholder'));
 }
 

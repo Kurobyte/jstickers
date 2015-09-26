@@ -87,7 +87,11 @@ function loadStickerData(sticker_id) {
                         audio = document.getElementById('stickSound');
                         audio.src = BASE_URL+'/products/0/0/'+ sVer +'/'+ sticker_id +'/android/main_sound.m4a';
                         audio.play();
-                        $('#placeholder').click(playAudio);
+                        if (jData.hasAnimation) {
+                            $('#placeholder').attr('onclick', 'playAPNG(); playAudio();');
+                        } else {
+                            $('#placeholder').attr('onclick', 'playAudio();');
+                        }
                         $('#stickAtrib').click(playAudio);
                     }
                 }
