@@ -16,7 +16,7 @@ function settingsDB() {
             var value = store.createIndex("value", "value");
             
             store.put({option: "outDir", value: path.join(APP_DIR, 'downloads')});
-            store.put({option: "prodVer", value: 32632});
+            store.put({option: "prodVer", value: 36938});
         }
     };
 

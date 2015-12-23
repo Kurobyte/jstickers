@@ -5,7 +5,11 @@ var path = require("path");
 var exec = require('child_process').exec;
 
 var BASE_URL = 'http://dl.stickershop.line.naver.jp';
-var APP_DIR = path.parse(process.execPath).dir;
+var APP_DIR = '';
+if (/^darwin/.test(process.platform))
+    APP_DIR = path.normalize(path.parse(process.execPath).dir+"/../../../../Resources/");
+else
+    APP_DIR = path.parse(process.execPath).dir;
 
 var sDB = new settingsDB();
 var prgCfg = {};
@@ -128,8 +132,7 @@ function checkFolder() {
 }
 
 function openFolder() {
-    var open = require('node-open');
-    open('open', prgCfg.outDir);
+    gui.Shell.openItem(prgCfg.outDir);
 }
 
 function selectFolder() {

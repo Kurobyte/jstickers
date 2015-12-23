@@ -49,6 +49,10 @@ function loadStickerData(sticker_id) {
         });
     } else {
         dwnAnimated = null;
+        dwnAudio = null;
+        prgBar.progressbar("value", 0);
+        $('#prgLabel').html( parseFloat(0).toFixed(2) +"%");
+        
         $('#stickAtrib').html('');
         nSticker = sticker_id;
         sVer = searchVer(sticker_id);
@@ -61,10 +65,14 @@ function loadStickerData(sticker_id) {
         $.ajax(BASE_URL+'/products/0/0/'+ sVer +'/'+ sticker_id +'/android/productInfo.meta', {
             success: function(data) {
                 sData = data;
-                jData = JSON.parse(data);
+                if (typeof data != 'object')
+                    jData = JSON.parse(data);
+                else
+                    jData = data;
                 var lang = Object.keys(jData['title']);
                 sTitle = jData.title[lang[0]];
                 $('#sticker_name').html('Name: '+jData.title[lang[0]]);
+                $('#sticker_name').attr('title', jData.title[lang[0]]);
                 $('#sticker_no').html('Nº: '+jData.stickers.length);
                 $('#stickAtrib').unbind();
                 $('#placeholder').unbind();
@@ -102,6 +110,7 @@ function loadStickerData(sticker_id) {
                 sData = undefined;
                 jData = undefined;
                 $('#sticker_name').html('Name: ');
+                $('#sticker_name').attr('title', '');
                 $('#sticker_no').html('Nº: ');
                 
                 $('#placeholder').attr('src', 'img/sticker_placeholder.png');

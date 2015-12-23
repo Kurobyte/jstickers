@@ -51,9 +51,6 @@ input[type = "text"] {
 }
 
 #windowControls i {
-    /*height: 20px;
-    margin-top: -4px;
-    margin-bottom: -10px;*/
     padding: 4px;
 }
 
@@ -148,6 +145,11 @@ input[type = "text"] {
 
     -webkit-user-drag: none; /* Prevents dragging of images/divs etc */
     user-drag: none;
+}
+
+.outLinks {
+    color: black;
+    text-decoration: none;
 }
 
 /* COLORS FOR FA */
